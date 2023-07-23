@@ -7,8 +7,10 @@ using AutoMapper;
 using DronesTech.Controllers;
 using DronesTech.DTO;
 using DronesTech.Interfaces;
+using DronesTech.Models;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DronesTech.Tests.Controller
 {
@@ -39,6 +41,29 @@ namespace DronesTech.Tests.Controller
 
             //Assert
             result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
+        }
+
+        [Fact]
+        public void DroneController_CreateDrone_ReturnOk()
+        {
+            //Arrange
+            var drone = A.Fake<Drone>();
+            var droneMap = A.Fake<DroneDTO>();
+            var droneCreate = A.Fake<DroneDTO>();
+            var drones = A.Fake<ICollection<DroneDTO>>();
+            var dronesList = A.Fake<List<DroneDTO>>();
+            A.CallTo(() => _droneRepository.GetDrones().Where(d => d.SerieNumber == droneCreate.SerieNumber).FirstOrDefault()).Returns(drone);
+            A.CallTo(() => _mapper.Map<Drone>(droneCreate)).Returns(drone);
+            A.CallTo(() => _droneRepository.CreateDrone(drone)).Returns(true);
+            var droneController = new DroneController(_droneRepository, _mapper, _medicineRepository);
+
+            //Act
+            var result = droneController.CreateDrone(droneMap);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
         }
     }
 }
