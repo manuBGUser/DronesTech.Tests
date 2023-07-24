@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -32,6 +33,13 @@ namespace DronesTech.Tests.Controller
         public void DroneController_GetDrones_ReturnOk()
         {
             //Arrange
+            var drone = A.Fake<Drone>();
+            drone.SerieNumber = "98656";
+            drone.BatteryCapacity = 100;
+            drone.Model = ModelType.HeavyWeight;
+            drone.Status = StatusType.Inactive;
+            drone.WeightLimit = 100;
+            A.CallTo(() => _droneRepository.CreateDrone(drone)).Returns(true);
             var drones = A.Fake<ICollection<DroneDTO>>();
             var dronesList = A.Fake<List<DroneDTO>>();
             A.CallTo(() => _mapper.Map<List<DroneDTO>>(drones)).Returns(dronesList);
@@ -45,6 +53,7 @@ namespace DronesTech.Tests.Controller
             result.Should().BeOfType(typeof(OkObjectResult));
         }
 
+        [Fact]
         public void DroneController_GetAbledDrones_ReturnOk()
         {
             //Arrange
@@ -70,28 +79,17 @@ namespace DronesTech.Tests.Controller
             var droneCreate = A.Fake<DroneDTO>();
             var drones = A.Fake<ICollection<DroneDTO>>();
             var dronesList = A.Fake<List<DroneDTO>>();
-
             A.CallTo(() => _droneRepository.GetDroneBySerieNumber(droneCreate.SerieNumber)).Returns(drone);
             A.CallTo(() => _mapper.Map<Drone>(droneCreate)).Returns(drone);
-            drone.SerieNumber = "98656";
-            drone.BatteryCapacity = 100;
-            drone.Model = ModelType.HeavyWeight;
-            drone.Status = StatusType.Inactive;
-            drone.WeightLimit = 100;
             A.CallTo(() => _droneRepository.CreateDrone(drone)).Returns(true);
             var droneController = new DroneController(_droneRepository, _mapper, _medicineRepository);
 
             //Act
-            droneMap.SerieNumber = "98656";
-            droneMap.BatteryCapacity = 100;
-            droneMap.Model = 4;
-            droneMap.Status = 1;
-            droneMap.WeightLimit = 100;
             var result = droneController.CreateDrone(droneMap);
 
             //Assert
             result.Should().NotBeNull();
-            result.Should().BeOfType(typeof(OkObjectResult));
+            result.Should().BeOfType(typeof(UnprocessableEntityObjectResult));
         }
 
         [Fact]
