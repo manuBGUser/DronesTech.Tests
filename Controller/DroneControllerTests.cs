@@ -138,7 +138,7 @@ namespace DronesTech.Tests.Controller
         public void DroneController_ChargeMedicineToDroneByMedicines_ReturnOk()
         {
             //Arrange
-            int droneId = 4;
+            int droneId = 5;
             List<int> medicinesObj = new List<int>() { 3, 4};
             Object optData = new { droneId = droneId, medicines = medicinesObj };
             optData = JsonConvert.SerializeObject(optData);
@@ -146,12 +146,14 @@ namespace DronesTech.Tests.Controller
             var drone = A.Fake<Drone>();
             var medicines = A.Fake<ICollection<Medicine>>();
             var medicinesEntrada = A.Fake<List<int>>();
+            decimal totalWeight = decimal.Zero;
             A.CallTo(() => _droneRepository.DroneExists(droneId)).Returns(true);
             A.CallTo(() => _droneRepository.IsDroneEmpty(droneId)).Returns(true);
             A.CallTo(() => _droneRepository.GetDroneById(droneId)).Returns(drone);
             A.CallTo(() => _droneRepository.IsDroneAbled(droneId)).Returns(true);
             A.CallTo(() => _medicineRepository.GetMedicinesByIds(medicinesEntrada)).Returns(medicines);
             A.CallTo(() => _droneRepository.ChargeMedicines(drone, medicines)).Returns(drone);
+            A.CallTo(() => _medicineRepository.GetMedicinesWeights(medicines)).Returns(totalWeight);
             var droneController = new DroneController(_droneRepository, _mapper, _medicineRepository);
 
             //Act
