@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ using DronesTech.Models.Types;
 using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DronesTech.Tests.Controller
 {
@@ -34,11 +37,6 @@ namespace DronesTech.Tests.Controller
         {
             //Arrange
             var drone = A.Fake<Drone>();
-            drone.SerieNumber = "98656";
-            drone.BatteryCapacity = 100;
-            drone.Model = ModelType.HeavyWeight;
-            drone.Status = StatusType.Inactive;
-            drone.WeightLimit = 100;
             A.CallTo(() => _droneRepository.CreateDrone(drone)).Returns(true);
             var drones = A.Fake<ICollection<DroneDTO>>();
             var dronesList = A.Fake<List<DroneDTO>>();
@@ -114,7 +112,10 @@ namespace DronesTech.Tests.Controller
         public void DroneController_ChargeMedicineToDrone_ReturnOk()
         {
             //Arrange
-            var droneId = 1;
+            int droneId = 4;
+            Object optData = new { droneId = droneId };
+            optData = JsonConvert.SerializeObject(optData);
+
             var drone = A.Fake<Drone>();
             var medicines = A.Fake<ICollection<Medicine>>();
             A.CallTo(() => _droneRepository.DroneExists(droneId)).Returns(true);
@@ -126,11 +127,39 @@ namespace DronesTech.Tests.Controller
             var droneController = new DroneController(_droneRepository, _mapper, _medicineRepository);
 
             //Act
-            var result = droneController.ChargeMedicineToDrone(droneId);
+            var result = droneController.ChargeMedicineToDrone(optData);
 
             //Assert
             result.Should().NotBeNull();
             result.Should().BeOfType(typeof(BadRequestObjectResult));
+        }
+
+        [Fact]
+        public void DroneController_ChargeMedicineToDroneByMedicines_ReturnOk()
+        {
+            //Arrange
+            int droneId = 4;
+            List<int> medicinesObj = new List<int>() { 3, 4};
+            Object optData = new { droneId = droneId, medicines = medicinesObj };
+            optData = JsonConvert.SerializeObject(optData);
+
+            var drone = A.Fake<Drone>();
+            var medicines = A.Fake<ICollection<Medicine>>();
+            var medicinesEntrada = A.Fake<List<int>>();
+            A.CallTo(() => _droneRepository.DroneExists(droneId)).Returns(true);
+            A.CallTo(() => _droneRepository.IsDroneEmpty(droneId)).Returns(true);
+            A.CallTo(() => _droneRepository.GetDroneById(droneId)).Returns(drone);
+            A.CallTo(() => _droneRepository.IsDroneAbled(droneId)).Returns(true);
+            A.CallTo(() => _medicineRepository.GetMedicinesByIds(medicinesEntrada)).Returns(medicines);
+            A.CallTo(() => _droneRepository.ChargeMedicines(drone, medicines)).Returns(drone);
+            var droneController = new DroneController(_droneRepository, _mapper, _medicineRepository);
+
+            //Act
+            var result = droneController.ChargeMedicineToDroneByMedicines(optData);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Should().BeOfType(typeof(OkObjectResult));
         }
 
         [Fact]
