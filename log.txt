@@ -1,0 +1,41 @@
+commit c7f5851234f73b500c745edcb2fa93384c8cc4fa
+Author: manuBGUser <parabitcoin97@gmail.com>
+Date:   Mon Jul 24 17:29:24 2023 +0200
+
+    Changing last test of charging meds by ids
+
+commit aafbd85b96d8fd2c05e9d1bca4844b3b5d5b821c
+Author: manuBGUser <parabitcoin97@gmail.com>
+Date:   Mon Jul 24 16:15:49 2023 +0200
+
+    Added test to new functionality of charging medicines
+
+commit 2ee3cc5714f3541916b0bcc352211ed75b569b76
+Author: manuBGUser <parabitcoin97@gmail.com>
+Date:   Mon Jul 24 05:16:45 2023 +0200
+
+    Finishing CreateDrone test
+
+commit 21c05757458413666522288ccfd6a62722efca8d
+Author: manuBGUser <parabitcoin97@gmail.com>
+Date:   Mon Jul 24 01:32:48 2023 +0200
+
+    The other ones test methods were created
+
+commit f7d59e26d5c2e558b20f5b9ee4cc8f893f847bf7
+Author: manuBGUser <parabitcoin97@gmail.com>
+Date:   Mon Jul 24 00:23:05 2023 +0200
+
+    Second test created for CreateDrone method
+
+commit 9f534dc03e3bc35c39449b92f14c2482a66f798f
+Author: manuBGUser <parabitcoin97@gmail.com>
+Date:   Sun Jul 23 23:48:06 2023 +0200
+
+    First test created for GetDrones method especiffically
+
+commit 1ba969fd0b4383cf6156b3ae6cb04ac16c36dbcb
+Author: manuBGUser <parabitcoin97@gmail.com>
+Date:   Sun Jul 23 23:06:03 2023 +0200
+
+    First commit. Unit test proect created
